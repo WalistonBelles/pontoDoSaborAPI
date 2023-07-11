@@ -1,0 +1,74 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL_LOCAL")
+}
+
+model User {
+  id          Int         @id @unique @default(autoincrement())
+  name        String      @db.VarChar(200)
+  password    String      @db.VarChar(200)
+  email       String      @db.VarChar(200)
+
+  logs        Logs[]
+
+  created_at  DateTime    @default(now())
+  @@map("user")
+}
+
+model Category {
+  id          Int         @id @unique @default(autoincrement())
+  name        String      @db.VarChar(200)
+
+  product     Product[]
+  @@map("category")
+}
+
+model Product {
+  id          Int         @id @unique @default(autoincrement())
+  category_id Int         @db.Integer()
+  name        String      @db.VarChar(200)
+  description String      @db.VarChar(200)
+  price       Float       @db.DoublePrecision()
+  cost        Float       @db.DoublePrecision()
+
+  sales       Sales[]
+  logs        Logs[]
+  category    Category     @relation(fields: [category_id], references: [id], onDelete: Cascade)
+
+  created_at  DateTime    @default(now())
+  updated_at  DateTime    @updatedAt()
+
+  @@map("product")
+}
+
+model Sales {
+  id          Int         @id @unique @default(autoincrement())
+  product_id  Int         @db.Integer()
+  count       Int         @db.Integer()
+  unity_price Float       @db.DoublePrecision()
+  total_price Float       @db.DoublePrecision()
+
+  product     Product     @relation(fields: [product_id], references: [id], onDelete: Cascade)
+  created_at  DateTime    @default(now())
+
+  @@map("sales")
+}
+
+model Logs {
+  id          Int         @id @unique @default(autoincrement())
+  user_id     Int         @db.Integer()
+  product_id  Int         @db.Integer()
+  action      String      @db.Text()
+
+  user        User        @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  product     Product     @relation(fields: [product_id], references: [id], onDelete: Cascade)
+
+  @@map("logs")
+}
