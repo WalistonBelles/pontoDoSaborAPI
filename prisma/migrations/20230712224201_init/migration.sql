@@ -4,9 +4,19 @@ CREATE TABLE "user" (
     "name" VARCHAR(200) NOT NULL,
     "password" VARCHAR(200) NOT NULL,
     "email" VARCHAR(200) NOT NULL,
+    "roleId" INTEGER NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "user_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "role" (
+    "id" SERIAL NOT NULL,
+    "name" VARCHAR(200) NOT NULL,
+    "isAdmin" BOOLEAN NOT NULL,
+
+    CONSTRAINT "role_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -20,7 +30,7 @@ CREATE TABLE "category" (
 -- CreateTable
 CREATE TABLE "product" (
     "id" SERIAL NOT NULL,
-    "category_id" INTEGER NOT NULL,
+    "categoryId" INTEGER NOT NULL,
     "name" VARCHAR(200) NOT NULL,
     "description" VARCHAR(200) NOT NULL,
     "price" DOUBLE PRECISION NOT NULL,
@@ -34,10 +44,10 @@ CREATE TABLE "product" (
 -- CreateTable
 CREATE TABLE "sales" (
     "id" SERIAL NOT NULL,
-    "product_id" INTEGER NOT NULL,
+    "productId" INTEGER NOT NULL,
     "count" INTEGER NOT NULL,
-    "unity_price" DOUBLE PRECISION NOT NULL,
-    "total_price" DOUBLE PRECISION NOT NULL,
+    "unityPrice" DOUBLE PRECISION NOT NULL,
+    "totalPrice" DOUBLE PRECISION NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "sales_pkey" PRIMARY KEY ("id")
@@ -46,8 +56,8 @@ CREATE TABLE "sales" (
 -- CreateTable
 CREATE TABLE "logs" (
     "id" SERIAL NOT NULL,
-    "user_id" INTEGER NOT NULL,
-    "product_id" INTEGER NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "productId" INTEGER NOT NULL,
     "action" TEXT NOT NULL,
 
     CONSTRAINT "logs_pkey" PRIMARY KEY ("id")
@@ -55,6 +65,9 @@ CREATE TABLE "logs" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "user_id_key" ON "user"("id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "role_id_key" ON "role"("id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "category_id_key" ON "category"("id");
@@ -69,13 +82,16 @@ CREATE UNIQUE INDEX "sales_id_key" ON "sales"("id");
 CREATE UNIQUE INDEX "logs_id_key" ON "logs"("id");
 
 -- AddForeignKey
-ALTER TABLE "product" ADD CONSTRAINT "product_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "category"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "user" ADD CONSTRAINT "user_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "role"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "sales" ADD CONSTRAINT "sales_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "product"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "product" ADD CONSTRAINT "product_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "category"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "logs" ADD CONSTRAINT "logs_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "sales" ADD CONSTRAINT "sales_productId_fkey" FOREIGN KEY ("productId") REFERENCES "product"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "logs" ADD CONSTRAINT "logs_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "product"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "logs" ADD CONSTRAINT "logs_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "logs" ADD CONSTRAINT "logs_productId_fkey" FOREIGN KEY ("productId") REFERENCES "product"("id") ON DELETE CASCADE ON UPDATE CASCADE;

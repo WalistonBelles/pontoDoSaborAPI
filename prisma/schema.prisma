@@ -15,10 +15,10 @@ model User {
   name        String      @db.VarChar(200)
   password    String      @db.VarChar(200)
   email       String      @db.VarChar(200)
-  role_id     Int         @db.Integer()
+  roleId      Int         @db.Integer()
 
   logs        Logs[]
-  role        Role        @relation(fields: [role_id], references: [id], onDelete: Cascade)
+  role        Role        @relation(fields: [roleId], references: [id], onDelete: Cascade)
 
   created_at  DateTime    @default(now())
   @@map("user")
@@ -27,7 +27,7 @@ model User {
 model Role {
   id          Int         @id @unique @default(autoincrement())
   name        String      @db.VarChar(200)
-  is_admin    Boolean     @db.Boolean()
+  isAdmin     Boolean     @db.Boolean()
 
   user        User[]
 
@@ -39,12 +39,13 @@ model Category {
   name        String      @db.VarChar(200)
 
   product     Product[]
+
   @@map("category")
 }
 
 model Product {
   id          Int         @id @unique @default(autoincrement())
-  category_id Int         @db.Integer()
+  categoryId  Int         @db.Integer()
   name        String      @db.VarChar(200)
   description String      @db.VarChar(200)
   price       Float       @db.DoublePrecision()
@@ -52,7 +53,7 @@ model Product {
 
   sales       Sales[]
   logs        Logs[]
-  category    Category     @relation(fields: [category_id], references: [id], onDelete: Cascade)
+  category    Category     @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   created_at  DateTime    @default(now())
   updated_at  DateTime    @updatedAt()
@@ -62,12 +63,12 @@ model Product {
 
 model Sales {
   id          Int         @id @unique @default(autoincrement())
-  product_id  Int         @db.Integer()
+  productId   Int         @db.Integer()
   count       Int         @db.Integer()
-  unity_price Float       @db.DoublePrecision()
-  total_price Float       @db.DoublePrecision()
+  unityPrice  Float       @db.DoublePrecision()
+  totalPrice  Float       @db.DoublePrecision()
 
-  product     Product     @relation(fields: [product_id], references: [id], onDelete: Cascade)
+  product     Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
   created_at  DateTime    @default(now())
 
   @@map("sales")
@@ -75,12 +76,12 @@ model Sales {
 
 model Logs {
   id          Int         @id @unique @default(autoincrement())
-  user_id     Int         @db.Integer()
-  product_id  Int         @db.Integer()
+  userId      Int         @db.Integer()
+  productId   Int         @db.Integer()
   action      String      @db.Text()
 
-  user        User        @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  product     Product     @relation(fields: [product_id], references: [id], onDelete: Cascade)
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product     Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@map("logs")
 }
