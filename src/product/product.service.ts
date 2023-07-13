@@ -11,6 +11,10 @@ export class ProductService {
   ): Promise<Product | null> {
     return this.prisma.product.findUnique({
       where: productWhereUniqueInput,
+      include: {
+        category: true,
+        logs: true,
+      },
     });
   }
 
@@ -28,6 +32,9 @@ export class ProductService {
       cursor,
       where,
       orderBy,
+      include: {
+        category: true,
+      },
     });
   }
 
