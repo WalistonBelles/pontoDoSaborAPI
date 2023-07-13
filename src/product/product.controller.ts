@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Patch } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { Product } from '@prisma/client';
 import { ProductService } from './product.service';
 
@@ -16,10 +24,19 @@ export class ProductController {
     return this.productService.findAll({});
   }
 
-  // @Post()
-  // async create(@Body() postData: Product): Promise<Product> {
-  //   return this.productService.create(postData);
-  // }
+  @Post()
+  async create(@Body() postData: Product): Promise<Product> {
+    const { name, categoryId, cost, description, price } = postData;
+    return this.productService.create({
+      name,
+      cost,
+      description,
+      price,
+      category: {
+        connect: { id: categoryId },
+      },
+    });
+  }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() product: Product): Promise<Product> {
