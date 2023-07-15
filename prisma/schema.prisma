@@ -16,6 +16,7 @@ model User {
   password    String      @db.VarChar(200)
   email       String      @db.VarChar(200) @unique
   roleId      Int         @db.Integer()
+  salt        String?      @db.VarChar(200)
 
   logs        Logs[]
   role        Role        @relation(fields: [roleId], references: [id], onDelete: Cascade)

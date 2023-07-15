@@ -6,7 +6,6 @@ let pass = '';
 
 async function hashPassword() {
   pass = await bcrypt.hash('12345678', 10);
-  console.log('password: ', pass);
 }
 
 hashPassword().then(async () => {
@@ -22,7 +21,6 @@ hashPassword().then(async () => {
 });
 
 const main = async (password) => {
-  console.log('pass: ', password);
   const rolesPromises = [
     prisma.user.upsert({
       where: { email: 'administrador@pontodosabor.com' },
